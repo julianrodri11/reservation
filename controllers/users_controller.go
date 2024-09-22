@@ -56,5 +56,4 @@ func (c *UserController) DeleteUser(ctx iris.Context) {
 		return
 	}
 	ctx.JSON(user)
-	//quitar fast forwad
 }
