@@ -1,0 +1,66 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Output directories
+bin/
+dist/
+build/
+
+# Go specific
+*.log
+*.out
+
+# Dependency directories (vendor/)
+vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Go modules
+go.mod
+go.sum
+
+# Swagger generated files
+docs/swagger.json
+docs/swagger.yaml
+
+# SQL files (if generated for migrations or other purposes)
+*.sql
+
+# IntelliJ IDEA
+.idea/
+
+# VS Code
+.vscode/
+
+# MacOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Compiled object files
+*.o
+*.a
+*.out
+
+# Database specific
+*.db
+*.sqlite3
+*.pg
+
+# Cover profiles
+*.coverprofile
+
+# Temporary files
+*.tmp
+*.temp
