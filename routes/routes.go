@@ -6,15 +6,18 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-func UserRoutes(app *iris.Application, userController controllers.UserController) {
-	// @Router /users [get]
+func ConfigureRoutes(app *iris.Application, userController controllers.UserController) {
 	users := app.Party("/users")
 	{
-		// @Router / [get]
-		users.Get("/", userController.GetAllUsers) // Ruta para obtener todos los usuarios
-		// @Router /users/register/ [post]
+		users.Get("/", userController.GetAllUsers)
 		users.Post("/register", userController.Register)
-		// @Router /users/email/{email} [get]
-		users.Get("/email/{email:string}", userController.GetUserByEmail) // Ruta para obtener usuario por correo
+		users.Get("/email/{email:string}", userController.GetUserByEmail)
+		users.Delete("/id/{id:int}", userController.DeleteUser)
+	}
+	entities := app.Party("/entities")
+	{
+		entities.Get("/all", userController.GetAllUsers)
+		entities.Post("/register", userController.Register)
+		entities.Get("/email/{email:string}", userController.GetUserByEmail)
 	}
 }

@@ -62,3 +62,20 @@ func (s *UserService) GetUserByEmail(email string) (dto.UserDTO, error) {
 
 	return userDTO, nil
 }
+
+// Consultar un usuario por correo
+func (s *UserService) DeleteUserById(id int) (dto.UserDTO, error) {
+	user, err := s.Repo.DeleteUser(id)
+	if err != nil {
+		return dto.UserDTO{}, err
+	}
+
+	var userDTO dto.UserDTO
+	err = utils.GenericMapper(&user, &userDTO)
+	if err != nil {
+		log.Println("Error mapping User entity to UserDTO:", err)
+		return dto.UserDTO{}, err
+	}
+
+	return userDTO, nil
+}

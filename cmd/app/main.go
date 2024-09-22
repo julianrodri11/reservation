@@ -30,7 +30,7 @@ func main() {
 	userController := controllers.UserController{Service: &userService}
 
 	// Configurar rutas
-	routes.UserRoutes(app, userController)
+	routes.ConfigureRoutes(app, userController)
 
 	// Configurar Swagger
 	docs.ConfigureSwagger(app)
