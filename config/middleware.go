@@ -15,21 +15,33 @@ var jwtSecret = []byte("your-secret-key")
 func JWTMiddleware(ctx iris.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 
-	// Parse the JWT string and validate it
+	if tokenString == "" {
+		// Si no se proporciona el token
+		ctx.StatusCode(http.StatusUnauthorized)
+		ctx.JSON(iris.Map{"error": "Token no proporcionado", "details": "Debe incluir un token de autorización en la cabecera"})
+		return
+	}
+
+	// Parsear el token y validarlo
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, iris.NewProblem().Status(http.StatusUnauthorized).Detail("Invalid signing method")
+			return nil, iris.NewProblem().Status(http.StatusUnauthorized).Detail("Método de firma no válido")
 		}
-		return jwtSecret, nil
+		return jwtSecret, nil // jwtSecret es tu clave secreta para firmar los tokens
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// Save the token data into the request context
+		// Guardar la información del token en el contexto para usarla más adelante
 		ctx.Values().Set("userID", claims["id"])
 		ctx.Next()
 	} else {
-		ctx.StopWithStatus(http.StatusUnauthorized)
-		ctx.JSON(iris.Map{"error": "Invalid token", "details": err.Error()})
+		// Responder con un mensaje claro si el token no es válido
+		ctx.StatusCode(http.StatusUnauthorized)
+		ctx.JSON(iris.Map{
+			"error":   "Token inválido",
+			"details": err.Error(),
+		})
+		return
 	}
 }
 
