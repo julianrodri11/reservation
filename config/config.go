@@ -16,6 +16,6 @@ func InitDB() *gorm.DB {
 	}
 
 	// Migrar las entidades
-	db.AutoMigrate(&entity.User{}, &entity.Reservation{})
+	db.AutoMigrate(&entity.Users{}, &entity.Reservations{})
 	return db
 }

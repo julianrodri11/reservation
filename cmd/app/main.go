@@ -22,16 +22,20 @@ func main() {
 	//db.AutoMigrate(&models.Usuario{})
 
 	// Migrar las entidades
-	db.AutoMigrate(&entity.User{}, &entity.Reservation{})
+	db.AutoMigrate(&entity.Users{}, &entity.Reservations{})
 
 	// Inicializar repositorios, servicios y controladores
 	userRepo := repository.UserRepository{DB: db}
 	userService := services.UserService{Repo: &userRepo}
 	userController := controllers.UserController{Service: &userService}
 
-	// Configurar rutas
-	routes.ConfigureRoutes(app, userController)
+	// Instanciar LoginController
+	loginRepo := repository.LoginRepository{DB: db}
+	loginService := services.LoginService{Repo: loginRepo} // Asumiendo que tienes un LoginService
+	loginController := controllers.LoginController{Service: loginService}
 
+	// Configurar rutas
+	routes.ConfigureRoutes(app, userController, loginController)
 	// Configurar Swagger
 	docs.ConfigureSwagger(app)
 

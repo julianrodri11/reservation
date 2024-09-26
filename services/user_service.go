@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"log"
 	"reservation-system/models/dto"
 	"reservation-system/models/entity"
@@ -18,7 +19,7 @@ type UserService struct {
 // crear un usuario
 func (s *UserService) Register(userDTO dto.UserDTO) error {
 
-	var userEntity entity.User
+	var userEntity entity.Users
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
 	userDTO.Password = string(hashedPassword)
@@ -26,7 +27,31 @@ func (s *UserService) Register(userDTO dto.UserDTO) error {
 	// Usar la función genérica para mapear el DTO a la entidad
 	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
 
-	return s.Repo.Create(userEntity)
+	return s.Repo.CreateUser(userEntity)
+}
+
+// actualizar un usuario
+func (s *UserService) Update(userDTO dto.UserDTO) error {
+
+	var userEntity entity.Users
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
+	userDTO.Password = string(hashedPassword)
+
+	// Usar la función genérica para mapear el DTO a la entidad
+	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
+
+	// Validar si el usuario existe antes de proceder con la actualización
+	exists, err := s.Repo.UserExistsById(int(userDTO.ID))
+	if err != nil {
+		return err // Devuelve el error si hubo problemas al consultar la existencia del usuario
+	}
+
+	if !exists {
+		return fmt.Errorf("el usuario con ID %d no existe", userDTO.ID) // Retorna un error si el usuario no existe
+	}
+
+	return s.Repo.UpdateUser(userEntity)
 }
 
 // Consultar todos los usuarios
@@ -63,7 +88,7 @@ func (s *UserService) GetUserByEmail(email string) (dto.UserDTO, error) {
 	return userDTO, nil
 }
 
-// Consultar un usuario por correo
+// Eliminar un usuario por correo
 func (s *UserService) DeleteUserById(id int) (dto.UserDTO, error) {
 	user, err := s.Repo.DeleteUser(id)
 	if err != nil {
