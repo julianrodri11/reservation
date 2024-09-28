@@ -2,8 +2,7 @@ package main
 
 import (
 	"reservation-system/config"
-	"reservation-system/controllers"
-	"reservation-system/docs" // Importar el paquete de Swagger
+	"reservation-system/controllers" // Importar el paquete de Swagger
 	"reservation-system/models/entity"
 	"reservation-system/repository"
 	"reservation-system/routes"
@@ -36,8 +35,6 @@ func main() {
 
 	// Configurar rutas
 	routes.ConfigureRoutes(app, userController, loginController)
-	// Configurar Swagger
-	docs.ConfigureSwagger(app)
 
 	// Iniciar servidor
 	app.Listen(":8080")

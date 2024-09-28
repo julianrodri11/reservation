@@ -7,7 +7,6 @@ import (
 )
 
 type Reservations struct {
-	gorm.Model
 	ID        uint           `gorm:"primaryKey" json:"id"`
 	UserID    uint           `json:"user_id"`
 	FieldID   uint           `json:"field_id"` // Referencia a la cancha sintética
