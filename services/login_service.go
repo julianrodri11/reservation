@@ -22,12 +22,6 @@ func (s *LoginService) Login(loginDTO dto.LoginDTO) (entity.Users, error) {
 		return entity.Users{}, errors.New("usuario o contraseña incorrectos")
 	}
 
-	// Comparar contraseñas
-	/*err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginDTO.Password))
-	if err != nil {
-		return entity.Users{}, errors.New("usuario o contraseña incorrectos")
-	}*/
-
 	// Si todo es correcto, devolver el usuario
 	return user, nil
 }

@@ -13,7 +13,7 @@ func ConfigureRoutes(app *iris.Application,
 	loginController controllers.LoginController) {
 	users := app.Party("/users")
 	{
-		users.Get("/", userController.GetAllUsers)
+		users.Get("/", config.JWTMiddleware, userController.GetAllUsers)
 		users.Post("/register", config.JWTMiddleware, userController.Register)
 		users.Post("/update", config.JWTMiddleware, userController.Update)
 		users.Get("/email/{email:string}", config.JWTMiddleware, userController.GetUserByEmail)
@@ -23,8 +23,8 @@ func ConfigureRoutes(app *iris.Application,
 
 	entities := app.Party("/entities")
 	{
-		entities.Get("/all", userController.GetAllUsers)
-		entities.Post("/register", userController.Register)
-		entities.Get("/email/{email:string}", userController.GetUserByEmail)
+		entities.Get("/all", config.JWTMiddleware, userController.GetAllUsers)
+		entities.Post("/register", config.JWTMiddleware, userController.Register)
+		entities.Get("/email/{email:string}", config.JWTMiddleware, userController.GetUserByEmail)
 	}
 }
