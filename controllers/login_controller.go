@@ -5,6 +5,7 @@ import (
 	"reservation-system/config"
 	"reservation-system/models/dto"
 	"reservation-system/services"
+	"reservation-system/utils"
 
 	"github.com/kataras/iris/v12"
 )
@@ -16,19 +17,11 @@ type LoginController struct {
 func (c *LoginController) Login(ctx iris.Context) {
 	var loginDTO dto.LoginDTO
 	err := ctx.ReadJSON(&loginDTO)
-	if err != nil {
-		ctx.StatusCode(http.StatusBadRequest)
-		ctx.JSON(iris.Map{"error": "Invalid input"})
-		return
-	}
+	utils.HandleBadRequest(ctx, err)
 
 	// Obtener el usuario desde el servicio de login
 	user, err := c.Service.Login(loginDTO)
-	if err != nil {
-		ctx.StatusCode(http.StatusUnauthorized)
-		ctx.JSON(iris.Map{"error": err.Error()})
-		return
-	}
+	utils.HandleUnauthorized(ctx, err)
 
 	// Generar el JWT para el usuario usando el ID
 	token, err := config.GenerateJWT(user.ID)

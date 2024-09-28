@@ -14,7 +14,7 @@ func ConfigureRoutes(app *iris.Application,
 	users := app.Party("/users")
 	{
 		users.Get("/", config.JWTMiddleware, userController.GetAllUsers)
-		users.Post("/register", config.JWTMiddleware, userController.RegisterUser)
+		users.Post("/register", userController.RegisterUser)
 		users.Post("/update", config.JWTMiddleware, userController.UpdateUser)
 		users.Get("/email/{email:string}", config.JWTMiddleware, userController.GetUserByEmail)
 		users.Delete("/id/{id:int}", config.JWTMiddleware, userController.DeleteUser)

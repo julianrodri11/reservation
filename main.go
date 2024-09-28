@@ -3,7 +3,6 @@ package main
 import (
 	"reservation-system/config"
 	"reservation-system/controllers" // Importar el paquete de Swagger
-	"reservation-system/models/entity"
 	"reservation-system/repository"
 	"reservation-system/routes"
 	"reservation-system/services"
@@ -16,12 +15,6 @@ func main() {
 
 	// Iniciar la base de datos
 	db := config.InitDB()
-
-	// Migrar el modelo de Usuario
-	//db.AutoMigrate(&models.Usuario{})
-
-	// Migrar las entidades
-	db.AutoMigrate(&entity.Users{}, &entity.Reservations{})
 
 	// Inicializar repositorios, servicios y controladores
 	userRepo := repository.UserRepository{DB: db}
