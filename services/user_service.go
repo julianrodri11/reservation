@@ -20,13 +20,9 @@ type UserService struct {
 func (s *UserService) Register(userDTO dto.UserDTO) error {
 
 	var userEntity entity.Users
-
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
 	userDTO.Password = string(hashedPassword)
-
-	// Usar la función genérica para mapear el DTO a la entidad
 	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
-
 	return s.Repo.CreateUser(userEntity)
 }
 
@@ -34,11 +30,8 @@ func (s *UserService) Register(userDTO dto.UserDTO) error {
 func (s *UserService) Update(userDTO dto.UserDTO) error {
 
 	var userEntity entity.Users
-
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
 	userDTO.Password = string(hashedPassword)
-
-	// Usar la función genérica para mapear el DTO a la entidad
 	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
 
 	// Validar si el usuario existe antes de proceder con la actualización
@@ -56,6 +49,7 @@ func (s *UserService) Update(userDTO dto.UserDTO) error {
 
 // Consultar todos los usuarios
 func (s *UserService) GetAllUsers() ([]dto.UserDTO, error) {
+
 	users, err := s.Repo.FindAll()
 	if err != nil {
 		return nil, err
@@ -73,6 +67,7 @@ func (s *UserService) GetAllUsers() ([]dto.UserDTO, error) {
 
 // Consultar un usuario por correo
 func (s *UserService) GetUserByEmail(email string) (dto.UserDTO, error) {
+
 	user, err := s.Repo.FindByEmail(email)
 	if err != nil {
 		return dto.UserDTO{}, err
@@ -88,8 +83,9 @@ func (s *UserService) GetUserByEmail(email string) (dto.UserDTO, error) {
 	return userDTO, nil
 }
 
-// Eliminar un usuario por correo
+// Eliminar un usuario por id
 func (s *UserService) DeleteUserById(id int) (dto.UserDTO, error) {
+
 	user, err := s.Repo.DeleteUser(id)
 	if err != nil {
 		return dto.UserDTO{}, err

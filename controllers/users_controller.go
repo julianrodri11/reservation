@@ -13,7 +13,7 @@ type UserController struct {
 	Service *services.UserService
 }
 
-func (c *UserController) Register(ctx iris.Context) {
+func (c *UserController) RegisterUser(ctx iris.Context) {
 	var user dto.UserDTO
 	err := ctx.ReadJSON(&user)
 	if err != nil {
@@ -23,18 +23,6 @@ func (c *UserController) Register(ctx iris.Context) {
 	}
 	c.Service.Register(user)
 	ctx.JSON(iris.Map{"message": "User registered successfully"})
-}
-
-func (c *UserController) Update(ctx iris.Context) {
-	var user dto.UserDTO
-	err := ctx.ReadJSON(&user)
-	if err != nil {
-		ctx.StatusCode(http.StatusBadRequest)
-		ctx.JSON(iris.Map{"error": "Invalid data"})
-		return
-	}
-	c.Service.Update(user)
-	ctx.JSON(iris.Map{"message": "User updated successfully"})
 }
 
 func (c *UserController) UpdateUser(ctx iris.Context) {
@@ -45,8 +33,9 @@ func (c *UserController) UpdateUser(ctx iris.Context) {
 		ctx.JSON(iris.Map{"error": "Invalid data"})
 		return
 	}
-	c.Service.Register(user)
-	ctx.JSON(iris.Map{"message": "User registered successfully"})
+	c.Service.Update(user)
+
+	ctx.JSON(iris.Map{"message": "User updated successfully"})
 }
 
 func (c *UserController) GetAllUsers(ctx iris.Context) {
