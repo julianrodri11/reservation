@@ -10,9 +10,15 @@ type UserRepository struct {
 	DB *gorm.DB
 }
 
-// crear usuario
-func (r *UserRepository) CreateUser(user entity.Users) error {
-	return r.DB.Create(&user).Error
+// Crear usuario y devolver el usuario creado
+func (r *UserRepository) CreateUser(user entity.Users) (*entity.Users, error) {
+	err := r.DB.Create(&user).Error
+	if err != nil {
+		// Si hay un error al crear el usuario, devolver nil y el error
+		return nil, err
+	}
+	// Si la creación fue exitosa, devolver el usuario y nil como error
+	return &user, nil
 }
 
 // Actualizar usuario existente

@@ -16,8 +16,11 @@ func HandleBadRequest(ctx iris.Context, err error) {
 }
 
 func HandleUnauthorized(ctx iris.Context, err error) {
-	ctx.StatusCode(http.StatusUnauthorized)
-	ctx.JSON(iris.Map{"error": err.Error()})
+	if err != nil {
+		ctx.StatusCode(http.StatusUnauthorized)
+		ctx.JSON(iris.Map{"error": err.Error()})
+		return
+	}
 }
 
 func HandleInternalServerError(ctx iris.Context, err error) {
@@ -31,6 +34,13 @@ func HandleInternalServerError(ctx iris.Context, err error) {
 func HandleNotFound(ctx iris.Context, err error) {
 	if err != nil {
 		ctx.StatusCode(http.StatusNotFound)
+		ctx.JSON(iris.Map{"error": err.Error()})
+		return
+	}
+}
+func HandleFound(ctx iris.Context, err error) {
+	if err != nil {
+		ctx.StatusCode(http.StatusFound)
 		ctx.JSON(iris.Map{"error": err.Error()})
 		return
 	}

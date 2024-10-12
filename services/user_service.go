@@ -17,13 +17,35 @@ type UserService struct {
 }
 
 // crear un usuario
-func (s *UserService) Register(userDTO dto.UserDTO) error {
+func (s *UserService) Register(userDTO dto.UserDTO) (*dto.UserDTO, error) {
+	// Verificar si el usuario ya existe por correo electrónico
+	if _, err := s.Repo.FindByEmail(userDTO.Email); err == nil {
+		// Si no hay error, significa que el usuario ya existe
+		return nil, fmt.Errorf("el usuario con correo %s ya está registrado", userDTO.Email)
+	}
 
 	var userEntity entity.Users
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("error al cifrar la contraseña: %v", err)
+	}
+
 	userDTO.Password = string(hashedPassword)
+	// Convertir el DTO a una entidad
 	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
-	return s.Repo.CreateUser(userEntity)
+
+	// Crear el usuario en la base de datos y devolver el resultado
+	createdUser, err := s.Repo.CreateUser(userEntity)
+	if err != nil {
+		return nil, fmt.Errorf("error al crear el usuario: %v", err)
+	}
+
+	// Convertir la entidad creada nuevamente a DTO para la respuesta
+	var createdUserDTO dto.UserDTO
+	utils.ConvertDTOtoEntity(createdUser, &createdUserDTO)
+
+	// Retornar el DTO del usuario creado
+	return &createdUserDTO, err
 }
 
 // actualizar un usuario

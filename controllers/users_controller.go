@@ -17,8 +17,18 @@ func (c *UserController) RegisterUser(ctx iris.Context) {
 	var user dto.UserDTO
 	err := ctx.ReadJSON(&user)
 	utils.HandleBadRequest(ctx, err)
-	c.Service.Register(user)
-	ctx.JSON(iris.Map{"message": "User registered successfully"})
+	// Intentar registrar al usuario usando el servicio
+	createdUser, err := c.Service.Register(user)
+
+	if err != nil {
+		// Si el servicio retorna un error, manejarlo aquí y enviar una respuesta adecuada
+		utils.HandleFound(ctx, err)
+		return
+	}
+
+	// Si no hay errores, retornar el usuario creado con un código de éxito
+	ctx.StatusCode(iris.StatusCreated)
+	ctx.JSON(iris.Map{"message": "User registered successfully", "user": createdUser})
 }
 
 func (c *UserController) UpdateUser(ctx iris.Context) {
