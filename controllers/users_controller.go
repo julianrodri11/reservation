@@ -16,7 +16,10 @@ type UserController struct {
 func (c *UserController) RegisterUser(ctx iris.Context) {
 	var user dto.UserDTO
 	err := ctx.ReadJSON(&user)
-	utils.HandleBadRequest(ctx, err)
+	if err != nil {
+		utils.HandleBadRequest(ctx, err)
+		return
+	}
 	// Intentar registrar al usuario usando el servicio
 	createdUser, err := c.Service.Register(user)
 

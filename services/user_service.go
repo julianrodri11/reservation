@@ -43,6 +43,7 @@ func (s *UserService) Register(userDTO dto.UserDTO) (*dto.UserDTO, error) {
 	// Convertir la entidad creada nuevamente a DTO para la respuesta
 	var createdUserDTO dto.UserDTO
 	utils.ConvertDTOtoEntity(createdUser, &createdUserDTO)
+	createdUserDTO.Password = ""
 
 	// Retornar el DTO del usuario creado
 	return &createdUserDTO, err
