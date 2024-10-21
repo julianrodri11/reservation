@@ -9,8 +9,13 @@ import (
 
 	"reservation-system/utils"
 
+	"github.com/go-playground/validator"
+
 	"golang.org/x/crypto/bcrypt"
 )
+
+// Crear una instancia del validador
+var validate = validator.New()
 
 type UserService struct {
 	Repo *repository.UserRepository
@@ -18,6 +23,7 @@ type UserService struct {
 
 // crear un usuario
 func (s *UserService) Register(userDTO dto.UserDTO) (*dto.UserDTO, error) {
+
 	// Verificar si el usuario ya existe por correo electrónico
 	if _, err := s.Repo.FindByEmail(userDTO.Email); err == nil {
 		// Si no hay error, significa que el usuario ya existe
