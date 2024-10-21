@@ -38,7 +38,6 @@ func (c *UserController) RegisterUser(ctx iris.Context) {
 	// Intentar registrar al usuario usando el servicio
 	createdUser, err := c.Service.Register(user)
 	if err != nil {
-		// Si el servicio retorna un error, manejarlo aquí y enviar una respuesta adecuada
 		utils.HandleFound(ctx, err)
 		return
 	}
@@ -65,12 +64,11 @@ func (c *UserController) UpdateUser(ctx iris.Context) {
 	// Intentar actualizar al usuario usando el servicio
 	updateUser, err := c.Service.Update(user)
 	if err != nil {
-		// Si el servicio retorna un error, manejarlo aquí y enviar una respuesta adecuada
-		utils.HandleFound(ctx, err)
+		utils.HandleNotFound(ctx, err)
 		return
 	}
 	// Si no hay errores, retornar el usuario creado con un código de éxito
-	ctx.StatusCode(iris.StatusCreated)
+	ctx.StatusCode(iris.StatusOK)
 	ctx.JSON(iris.Map{"message": "User updated successfully", "user": updateUser})
 }
 
@@ -83,14 +81,23 @@ func (c *UserController) GetAllUsers(ctx iris.Context) {
 func (c *UserController) GetUserByEmail(ctx iris.Context) {
 	email := ctx.Params().Get("email")
 	user, err := c.Service.GetUserByEmail(email)
-	utils.HandleNotFound(ctx, err)
-	ctx.JSON(user)
+	if err != nil {
+		utils.HandleNotFound(ctx, err)
+		return
+	}
+	utils.HandleFound(ctx, err)
+	ctx.JSON(iris.Map{"message": "User found successfully", "user": user})
+
 }
 
 func (c *UserController) DeleteUser(ctx iris.Context) {
 	id := ctx.Params().Get("id")
 	userID, err := strconv.Atoi(id)
 	user, err := c.Service.DeleteUserById(userID)
-	utils.HandleNotFound(ctx, err)
-	ctx.JSON(user)
+	if err != nil {
+		utils.HandleNotFound(ctx, err)
+		return
+	}
+	utils.HandleFound(ctx, err)
+	ctx.JSON(iris.Map{"message": "User deleted successfully", "user": user})
 }

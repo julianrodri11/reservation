@@ -120,7 +120,7 @@ func (s *UserService) GetUserByEmail(email string) (dto.UserDTO, error) {
 		log.Println("Error mapping User entity to UserDTO:", err)
 		return dto.UserDTO{}, err
 	}
-
+	userDTO.Password = ""
 	return userDTO, nil
 }
 
@@ -138,6 +138,6 @@ func (s *UserService) DeleteUserById(id int) (dto.UserDTO, error) {
 		log.Println("Error mapping User entity to UserDTO:", err)
 		return dto.UserDTO{}, err
 	}
-
+	userDTO.Password = ""
 	return userDTO, nil
 }
