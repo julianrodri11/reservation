@@ -56,24 +56,35 @@ func (s *UserService) Register(userDTO dto.UserDTO) (*dto.UserDTO, error) {
 }
 
 // actualizar un usuario
-func (s *UserService) Update(userDTO dto.UserDTO) error {
+func (s *UserService) Update(userDTO dto.UserDTO) (*dto.UserDTO, error) {
+
+	// Validar si el usuario existe antes de proceder con la actualización
+	existe, err := s.Repo.UserExistsById(int(userDTO.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error al consultar el ID %d : ", userDTO.ID) // Devuelve el error si hubo problemas al consultar la existencia del usuario
+	}
+	if !existe {
+		return nil, fmt.Errorf("el usuario con ID %d no existe", userDTO.ID)
+	}
 
 	var userEntity entity.Users
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(userDTO.Password), bcrypt.DefaultCost)
 	userDTO.Password = string(hashedPassword)
+
 	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
 
-	// Validar si el usuario existe antes de proceder con la actualización
-	exists, err := s.Repo.UserExistsById(int(userDTO.ID))
+	// Actualiza el usuario en la base de datos y devolver el resultado
+	updatedUser, err := s.Repo.UpdateUser(userEntity)
 	if err != nil {
-		return err // Devuelve el error si hubo problemas al consultar la existencia del usuario
+		return nil, fmt.Errorf("error al actualizar el usuario: %v", err)
 	}
 
-	if !exists {
-		return fmt.Errorf("el usuario con ID %d no existe", userDTO.ID) // Retorna un error si el usuario no existe
-	}
+	// Convertir la entidad creada nuevamente a DTO para la respuesta
+	var updatedUserDTO dto.UserDTO
+	utils.ConvertDTOtoEntity(updatedUser, &updatedUserDTO)
+	updatedUserDTO.Password = ""
 
-	return s.Repo.UpdateUser(userEntity)
+	return &updatedUserDTO, err
 }
 
 // Consultar todos los usuarios
@@ -88,6 +99,7 @@ func (s *UserService) GetAllUsers() ([]dto.UserDTO, error) {
 	for _, user := range users {
 		var userDTO dto.UserDTO
 		utils.GenericMapper(&user, &userDTO)
+		userDTO.Password = ""
 		userDTOs = append(userDTOs, userDTO)
 	}
 

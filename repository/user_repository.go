@@ -22,8 +22,14 @@ func (r *UserRepository) CreateUser(user entity.Users) (*entity.Users, error) {
 }
 
 // Actualizar usuario existente
-func (r *UserRepository) UpdateUser(user entity.Users) error {
-	return r.DB.Save(&user).Error
+func (r *UserRepository) UpdateUser(user entity.Users) (*entity.Users, error) {
+	err := r.DB.Save(&user).Error
+	if err != nil {
+		// Si hay un error al actualziar el usuario, devolver nil y el error
+		return nil, err
+	}
+	// Si la actualización fue exitosa, devolver el usuario y nil como error
+	return &user, nil
 }
 
 // Consultar todos los usuarios
