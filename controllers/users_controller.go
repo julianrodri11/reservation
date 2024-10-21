@@ -6,11 +6,20 @@ import (
 	"reservation-system/utils"
 	"strconv"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 )
 
+// Crear una instancia del validador
+var validate = validator.New()
+
 type UserController struct {
 	Service *services.UserService
+}
+
+func init() {
+	// Registrar la validación personalizada para el correo
+	validate.RegisterValidation("customEmail", utils.ValidateEmail)
 }
 
 func (c *UserController) RegisterUser(ctx iris.Context) {
@@ -20,15 +29,20 @@ func (c *UserController) RegisterUser(ctx iris.Context) {
 		utils.HandleBadRequest(ctx, err)
 		return
 	}
+	// Validar el DTO
+	err = validate.Struct(user)
+	if err != nil {
+		// Si las validaciones fallan, devolver un error 400 con los detalles
+		utils.HandleValidationsBadRequest(ctx, err)
+		return
+	}
 	// Intentar registrar al usuario usando el servicio
 	createdUser, err := c.Service.Register(user)
-
 	if err != nil {
 		// Si el servicio retorna un error, manejarlo aquí y enviar una respuesta adecuada
 		utils.HandleFound(ctx, err)
 		return
 	}
-
 	// Si no hay errores, retornar el usuario creado con un código de éxito
 	ctx.StatusCode(iris.StatusCreated)
 	ctx.JSON(iris.Map{"message": "User registered successfully", "user": createdUser})
