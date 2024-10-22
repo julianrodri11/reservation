@@ -11,7 +11,11 @@ import (
 )
 
 func main() {
+
 	app := iris.New()
+
+	//Variables de entorno
+	config.LoadEnv()
 
 	// Iniciar la base de datos
 	db := config.InitDB()

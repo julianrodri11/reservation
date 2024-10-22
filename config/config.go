@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
 	"reservation-system/models/entity"
 
 	"gorm.io/driver/postgres"
@@ -11,7 +12,16 @@ import (
 
 func InitDB() *gorm.DB {
 
-	dsn := "host=db user=postgres password=123 dbname=reservas port=5432 sslmode=disable"
+	// Obtener variables de entorno
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+	sslmode := os.Getenv("SSL_MODE")
+
+	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=" + sslmode
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
