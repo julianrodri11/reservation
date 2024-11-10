@@ -15,13 +15,24 @@ type LoginController struct {
 }
 
 func (c *LoginController) Login(ctx iris.Context) {
+	// Validar objeto json
 	var loginDTO dto.LoginDTO
 	err := ctx.ReadJSON(&loginDTO)
-	utils.HandleBadRequest(ctx, err)
-
+	if err != nil {
+		utils.HandleBadRequest(ctx, err)
+		return
+	}
+	// Validar el DTO usando la función de utilidades
+	err = validate.Struct(loginDTO)
+	if utils.HandleValidationError(ctx, err) {
+		return
+	}
 	// Obtener el usuario desde el servicio de login
 	user, err := c.Service.Login(loginDTO)
-	utils.HandleUnauthorized(ctx, err)
+	if err != nil {
+		utils.HandleUnauthorized(ctx, err)
+		return
+	}
 
 	// Generar el JWT para el usuario usando el ID
 	token, err := config.GenerateJWT(user.ID)

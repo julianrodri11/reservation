@@ -19,7 +19,7 @@ func (s *LoginService) Login(loginDTO dto.LoginDTO) (entity.Users, error) {
 	// Buscar usuario por email
 	user, err := s.Repo.FindByEmailAndPassword(loginDTO.Email, loginDTO.Password)
 	if err != nil {
-		return entity.Users{}, errors.New("usuario o contraseña incorrectos")
+		return entity.Users{}, errors.New("Usuario o contraseña incorrectos")
 	}
 
 	// Si todo es correcto, devolver el usuario

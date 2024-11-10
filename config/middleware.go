@@ -1,7 +1,10 @@
 package config
 
 import (
+	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -47,9 +50,17 @@ func JWTMiddleware(ctx iris.Context) {
 
 // GenerateJWT genera un token JWT para un usuario dado
 func GenerateJWT(userID uint) (string, error) {
+
+	// Convierte la variable de entorno EXPIRE_TOKEN_HOURS a int
+	expireTokenHours, err := strconv.Atoi(os.Getenv("EXPIRE_TOKEN_HOURS"))
+	if err != nil {
+		log.Printf("Error al convertir EXPIRE_TOKEN_HOURS: %v. Usando valor predeterminado de 24 horas", err)
+		//expireTokenHours = 0 // Valor predeterminado de 24 horas si no se puede convertir
+	}
+
 	claims := jwt.MapClaims{
 		"sub": userID,
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expiración de 24 horas
+		"exp": time.Now().Add(time.Hour * time.Duration(expireTokenHours)).Unix(), // Expiración de 24 horas
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

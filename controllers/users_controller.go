@@ -32,7 +32,6 @@ func (c *UserController) RegisterUser(ctx iris.Context) {
 	// Validar el DTO usando la función de utilidades
 	err = validate.Struct(user)
 	if utils.HandleValidationError(ctx, err) {
-		// Si hubo errores de validación, ya se manejaron, simplemente retornar
 		return
 	}
 	// Intentar registrar al usuario usando el servicio
