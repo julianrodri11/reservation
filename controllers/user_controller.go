@@ -42,12 +42,13 @@ func (c *UserController) RegisterUser(ctx iris.Context) {
 	}
 	// Si no hay errores, retornar el usuario creado con un código de éxito
 	ctx.StatusCode(iris.StatusCreated)
-	ctx.JSON(iris.Map{"message": "User registered successfully", "user": createdUser})
+	ctx.JSON(iris.Map{"message": "Register saved successfully", "user": createdUser})
 }
 
 func (c *UserController) UpdateUser(ctx iris.Context) {
-	var user dto.UserDTO
+
 	//leer Json
+	var user dto.UserDTO
 	err := ctx.ReadJSON(&user)
 	if err != nil {
 		utils.HandleBadRequest(ctx, err)
@@ -59,7 +60,6 @@ func (c *UserController) UpdateUser(ctx iris.Context) {
 		// Si hubo errores de validación, ya se manejaron, simplemente retornar
 		return
 	}
-
 	// Intentar actualizar al usuario usando el servicio
 	updateUser, err := c.Service.Update(user)
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *UserController) UpdateUser(ctx iris.Context) {
 	}
 	// Si no hay errores, retornar el usuario creado con un código de éxito
 	ctx.StatusCode(iris.StatusOK)
-	ctx.JSON(iris.Map{"message": "User updated successfully", "user": updateUser})
+	ctx.JSON(iris.Map{"message": "Register updated successfully", "user": updateUser})
 }
 
 func (c *UserController) GetAllUsers(ctx iris.Context) {
@@ -84,8 +84,8 @@ func (c *UserController) GetUserByEmail(ctx iris.Context) {
 		utils.HandleNotFound(ctx, err)
 		return
 	}
-	utils.HandleFound(ctx, err)
-	ctx.JSON(iris.Map{"message": "User found successfully", "user": user})
+	ctx.StatusCode(iris.StatusFound)
+	ctx.JSON(iris.Map{"message": "Register found successfully", "user": user})
 
 }
 
@@ -97,6 +97,6 @@ func (c *UserController) DeleteUser(ctx iris.Context) {
 		utils.HandleNotFound(ctx, err)
 		return
 	}
-	utils.HandleFound(ctx, err)
-	ctx.JSON(iris.Map{"message": "User deleted successfully", "user": user})
+	ctx.StatusCode(iris.StatusFound)
+	ctx.JSON(iris.Map{"message": "Register deleted successfully", "user": user})
 }

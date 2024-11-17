@@ -10,10 +10,11 @@ import (
 
 func ConfigureRoutes(app *iris.Application,
 	userController controllers.UserController,
-	loginController controllers.LoginController) {
+	loginController controllers.LoginController,
+	companyController controllers.CompanyController) {
 	users := app.Party("/users")
 	{
-		users.Get("/", config.JWTMiddleware, userController.GetAllUsers)
+		users.Get("/all", config.JWTMiddleware, userController.GetAllUsers)
 		users.Post("/register", userController.RegisterUser)
 		users.Post("/update", config.JWTMiddleware, userController.UpdateUser)
 		users.Get("/email/{email:string}", config.JWTMiddleware, userController.GetUserByEmail)
@@ -26,5 +27,14 @@ func ConfigureRoutes(app *iris.Application,
 		entities.Get("/all", config.JWTMiddleware, userController.GetAllUsers)
 		entities.Post("/register", config.JWTMiddleware, userController.RegisterUser)
 		entities.Get("/email/{email:string}", config.JWTMiddleware, userController.GetUserByEmail)
+	}
+
+	companies := app.Party("/companies")
+	{
+		companies.Get("/all", config.JWTMiddleware, companyController.GetAllCompanies)
+		companies.Post("/register", companyController.RegisterCompany)
+		companies.Post("/update", config.JWTMiddleware, companyController.UpdateCompany)
+		companies.Get("/email/{email:string}", config.JWTMiddleware, companyController.GetCompanyByEmail)
+		companies.Delete("/id/{id:int}", config.JWTMiddleware, companyController.DeleteCompany)
 	}
 }

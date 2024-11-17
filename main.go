@@ -30,8 +30,13 @@ func main() {
 	loginService := services.LoginService{Repo: loginRepo} // Asumiendo que tienes un LoginService
 	loginController := controllers.LoginController{Service: loginService}
 
+	// Instanciar CompanyController
+	companyRepo := repository.CompanyRepository{DB: db}
+	companyService := services.CompanyService{Repo: &companyRepo}
+	companyController := controllers.CompanyController{Service: &companyService}
+
 	// Configurar rutas
-	routes.ConfigureRoutes(app, userController, loginController)
+	routes.ConfigureRoutes(app, userController, loginController, companyController)
 
 	// Iniciar servidor
 	app.Listen(":8080")

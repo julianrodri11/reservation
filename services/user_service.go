@@ -9,13 +9,8 @@ import (
 
 	"reservation-system/utils"
 
-	"github.com/go-playground/validator"
-
 	"golang.org/x/crypto/bcrypt"
 )
-
-// Crear una instancia del validador
-var validate = validator.New()
 
 type UserService struct {
 	Repo *repository.UserRepository

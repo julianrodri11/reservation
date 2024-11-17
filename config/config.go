@@ -33,7 +33,7 @@ func InitDB() *gorm.DB {
 	} */
 
 	// Migrar las entidades nuevamente
-	err = db.AutoMigrate(&entity.Users{}, &entity.Reservations{})
+	err = db.AutoMigrate(&entity.Company{}, &entity.Users{}, &entity.Reservations{})
 	if err != nil {
 		log.Fatal("Failed to migrate tables:", err)
 	}

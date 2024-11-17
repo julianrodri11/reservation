@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -25,6 +26,9 @@ func JWTMiddleware(ctx iris.Context) {
 		return
 	}
 
+	// Quitar prefijo "Bearer " si está presente
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
 	// Parsear el token y validarlo
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -32,6 +36,16 @@ func JWTMiddleware(ctx iris.Context) {
 		}
 		return jwtSecret, nil // jwtSecret es tu clave secreta para firmar los tokens
 	})
+
+	if err != nil {
+		// Responder con el error específico del token
+		ctx.StatusCode(http.StatusUnauthorized)
+		ctx.JSON(iris.Map{
+			"error":   "Token inválido",
+			"details": err.Error(),
+		})
+		return
+	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		// Guardar la información del token en el contexto para usarla más adelante
@@ -42,7 +56,7 @@ func JWTMiddleware(ctx iris.Context) {
 		ctx.StatusCode(http.StatusUnauthorized)
 		ctx.JSON(iris.Map{
 			"error":   "Token inválido",
-			"details": err.Error(),
+			"details": "Token inválido o no autorizado",
 		})
 		return
 	}
