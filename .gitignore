@@ -21,7 +21,7 @@ go.work
 go.work.sum
 
 # Go modules
-go.mod
+#go.mod
 go.sum
 
 # Swagger generated files
