@@ -25,6 +25,7 @@ func (s *CompanyService) Register(companyDTO dto.CompanyDTO) (*dto.CompanyDTO, e
 	}
 
 	var companyEntity entity.Company
+	companyDTO.Email = strings.ToLower(companyDTO.Email)
 	// Convertir el DTO a una entidad
 	utils.ConvertDTOtoEntity(&companyDTO, &companyEntity)
 

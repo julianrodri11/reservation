@@ -33,6 +33,7 @@ func (s *UserService) Register(userDTO dto.UserDTO) (*dto.UserDTO, error) {
 	}
 
 	userDTO.Password = string(hashedPassword)
+	userDTO.Email = strings.ToLower(userDTO.Email)
 	// Convertir el DTO a una entidad
 	utils.ConvertDTOtoEntity(&userDTO, &userEntity)
 
