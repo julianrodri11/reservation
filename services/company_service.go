@@ -6,6 +6,7 @@ import (
 	"reservation-system/models/dto"
 	"reservation-system/models/entity"
 	"reservation-system/repository"
+	"strings"
 
 	"reservation-system/utils"
 )
@@ -18,9 +19,9 @@ type CompanyService struct {
 func (s *CompanyService) Register(companyDTO dto.CompanyDTO) (*dto.CompanyDTO, error) {
 
 	// Verificar si el empresa ya existe por correo electrónico
-	if _, err := s.Repo.FindByEmail(companyDTO.Email); err == nil {
+	if _, err := s.Repo.FindByEmail(strings.ToLower(companyDTO.Email)); err == nil {
 		// Si no hay error, significa que el empresa ya existe
-		return nil, fmt.Errorf("La empresa con correo %s ya está registrado", companyDTO.Email)
+		return nil, fmt.Errorf("La empresa con correo %s ya está registrado", strings.ToLower(companyDTO.Email))
 	}
 
 	var companyEntity entity.Company
@@ -91,7 +92,7 @@ func (s *CompanyService) GetAll() ([]dto.CompanyDTO, error) {
 // Consultar un empresa por correo
 func (s *CompanyService) GetCompanyByEmail(email string) (dto.CompanyDTO, error) {
 
-	company, err := s.Repo.FindByEmail(email)
+	company, err := s.Repo.FindByEmail(strings.ToLower(email))
 	if err != nil {
 		return dto.CompanyDTO{}, err
 	}

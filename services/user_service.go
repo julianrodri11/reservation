@@ -6,6 +6,7 @@ import (
 	"reservation-system/models/dto"
 	"reservation-system/models/entity"
 	"reservation-system/repository"
+	"strings"
 
 	"reservation-system/utils"
 
@@ -20,9 +21,9 @@ type UserService struct {
 func (s *UserService) Register(userDTO dto.UserDTO) (*dto.UserDTO, error) {
 
 	// Verificar si el usuario ya existe por correo electrónico
-	if _, err := s.Repo.FindByEmail(userDTO.Email); err == nil {
+	if _, err := s.Repo.FindByEmail(strings.ToLower(userDTO.Email)); err == nil {
 		// Si no hay error, significa que el usuario ya existe
-		return nil, fmt.Errorf("el usuario con correo %s ya está registrado", userDTO.Email)
+		return nil, fmt.Errorf("el usuario con correo %s ya está registrado", strings.ToLower(userDTO.Email))
 	}
 
 	var userEntity entity.Users
@@ -104,7 +105,7 @@ func (s *UserService) GetAllUsers() ([]dto.UserDTO, error) {
 // Consultar un usuario por correo
 func (s *UserService) GetUserByEmail(email string) (dto.UserDTO, error) {
 
-	user, err := s.Repo.FindByEmail(email)
+	user, err := s.Repo.FindByEmail(strings.ToLower(email))
 	if err != nil {
 		return dto.UserDTO{}, err
 	}
