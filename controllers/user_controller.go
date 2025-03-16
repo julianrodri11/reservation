@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"reservation-system/models/dto"
 	"reservation-system/services"
 	"reservation-system/utils"
@@ -28,25 +27,10 @@ func init() {
 func (c *UserController) RegisterUser(ctx iris.Context) {
 
 	// Leer el JSON recibido
-	var cryp dto.EncrypDTO
-	err := ctx.ReadJSON(&cryp)
-	if err != nil {
-		utils.HandleBadRequest(ctx, err)
+	err, decryptedJson, shouldReturn := utils.Request_convert_decryp(ctx)
+	if shouldReturn {
 		return
 	}
-
-	// Obtener el campo "encrypted_data"
-	encryptedBase64 := cryp.Encrypted_data
-
-	// Desencriptar los datos
-	decryptedJson, err := utils.DecryptMessage(encryptedBase64)
-
-	if err != nil {
-		utils.HandleBadRequest(ctx, fmt.Errorf("%s", err.Error()))
-		return
-	}
-
-	log.Println("Request: " + decryptedJson + "\n")
 
 	// Convertir el JSON desencriptado en un struct UserDTO
 	var user dto.UserDTO

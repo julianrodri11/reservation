@@ -10,6 +10,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reservation-system/models/dto"
+
+	"github.com/kataras/iris/v12"
 )
 
 // LoadPrivateKey carga la clave privada desde un archivo cuyo path está en .env.local
@@ -112,4 +115,27 @@ func DecryptMessage(encryptedBase64 string) (string, error) {
 	}
 
 	return string(decryptedBytes), nil
+}
+
+func Request_convert_decryp(ctx iris.Context) (error, string, bool) {
+	var cryp dto.EncrypDTO
+	err := ctx.ReadJSON(&cryp)
+	if err != nil {
+		HandleBadRequest(ctx, err)
+		return nil, "", true
+	}
+
+	// Obtener el campo "encrypted_data"
+	encryptedBase64 := cryp.Encrypted_data
+
+	// Desencriptar los datos
+	decryptedJson, err := DecryptMessage(encryptedBase64)
+
+	if err != nil {
+		HandleBadRequest(ctx, fmt.Errorf("%s", err.Error()))
+		return nil, "", true
+	}
+
+	log.Println("Request: " + decryptedJson + "\n")
+	return err, decryptedJson, false
 }

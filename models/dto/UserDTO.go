@@ -8,5 +8,5 @@ type UserDTO struct {
 	CompanyID uint   `json:"company_id" validate:"required"`
 }
 type EncrypDTO struct {
-	Encrypted_data string `json:"encrypted_data" validate:"required"`
+	Encrypted_data string `json:"data" validate:"required"`
 }
