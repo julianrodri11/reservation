@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"reservation-system/models/dto"
 	"reservation-system/services"
 	"reservation-system/utils"
@@ -26,15 +27,25 @@ func init() {
 
 func (c *UserController) RegisterUser(ctx iris.Context) {
 
-	// Leer el JSON recibido
-	err, decryptedJson, shouldReturn := utils.Request_convert_decryp(ctx)
-	if shouldReturn {
-		return
+	/* TRATAMIENTO DE REQUEST ENCRIPTADA O NO */
+	isRequestEncrypt := os.Getenv("IS_REQUEST_ENCRYPT")
+	var user dto.UserDTO
+	var err error
+
+	if isRequestEncrypt == "true" {
+		// Leer el JSON recibido
+		_, decryptedJson, shouldReturn := utils.Request_convert_decryp(ctx)
+		if shouldReturn {
+			return
+		}
+		// Convertir el JSON desencriptado en un struct UserDTO
+		err = json.Unmarshal([]byte(decryptedJson), &user) // Convertir string a struct
+	} else {
+		//Petición normal sin encriptación
+		err = ctx.ReadJSON(&user) // Asignar el error a la variable 'err' existente
 	}
 
-	// Convertir el JSON desencriptado en un struct UserDTO
-	var user dto.UserDTO
-	err = json.Unmarshal([]byte(decryptedJson), &user) // Convertir string a struct
+	/* PROCESO NORMAL */
 	if err != nil {
 		utils.HandleBadRequest(ctx, fmt.Errorf("error parseando JSON desencriptado: %v", err))
 		return
