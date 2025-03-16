@@ -1,5 +1,7 @@
 # Hi everyone, Welcome
 
+## Run project
+
 Run the project with localhost
 go run main.go
 
@@ -9,21 +11,28 @@ play icon run and debug on vscode
 Run the project with docker
 docker-compose up --build
 
-## Configurar el auto compilación con air
-> Instalar AIR en windows
+## Configure auto-compilation with AIR
+> Install AIR on Windows
 go install github.com/air-verse/air@latest
 
-Adicionar al PATH
+Add PATH
 C:\Users\TU_USUARIO\go\bin
-COLOCAR DE PRIMER EN LA PARTE DE ARRIBA
+
+Place first on top
 %USERPROFILE%\go\bin
 en las variables de sistema solamente
 
-verificar que se instaló
+Verify that it was installed
 air -v
 
-Dentro del proyecto correr el comando
+Initialize AIR
 air init
 
-Finalmente correr con
+Finally run with
 air
+
+## Encrypt / Decryo request
+
+https://emn178.github.io/online-tools/rsa/decrypt/
+
+ECB / OAEP / SHA256
