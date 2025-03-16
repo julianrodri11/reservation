@@ -7,3 +7,6 @@ type UserDTO struct {
 	Password  string `json:"password" validate:"required,min=5,max=12"`
 	CompanyID uint   `json:"company_id" validate:"required"`
 }
+type EncrypDTO struct {
+	Encrypted_data string `json:"encrypted_data" validate:"required"`
+}
